@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace TaxPlus
 {
-    public class BinaryOperation : Action
+    public abstract class MustInitialize
     {
-        public decimal Amount { get; set; }
-        public BinaryOperation(decimal before, decimal amount)
-        {
-            Before = before;
-            Amount = amount;
-            Ignore = false;
-        }
+        public MustInitialize(IAction before, decimal amount) { }
+        public MustInitialize(decimal amount) { }
+    }
+    public interface IBinaryOperation : IAction
+    {
+        decimal Amount { get; set; }
     }
 }

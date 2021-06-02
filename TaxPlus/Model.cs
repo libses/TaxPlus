@@ -8,8 +8,8 @@ namespace TaxPlus
 {
     public class Model
     {
-        public decimal Input;
-        public List<Action> ActionList = new List<Action>();
+        public decimal Input { get; set; }
+        public List<IAction> ActionList = new List<IAction>();
         public decimal Output { 
             get
             {

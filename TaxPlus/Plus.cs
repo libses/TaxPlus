@@ -6,19 +6,48 @@ using System.Threading.Tasks;
 
 namespace TaxPlus
 {
-    public class Plus : BinaryOperation
+    public class Plus : MustInitialize, IBinaryOperation
     {
-        public Plus(decimal before, decimal amount) : base(before, amount)
-        {
-        }
-        public new decimal After
-        {
-            get
-            {
+        public Model Input { get; set; }
+        public decimal Amount { get; set; }
+        public string Name { get; set; }
+        public bool Ignore { get; set; }
+        public IAction Before { get; set; }
+        public decimal After { get {
+                if (Before == null)
+                {
+                    if (Ignore)
+                    {
+                        return Input.Input;
+                    }
+                    else
+                    {
+                        return Input.Input + Amount;
+                    }
+                }
                 if (Ignore)
-                    return Before;
-                return Before + Amount;
-            }
+                {
+                    return Before.After;
+                } 
+                else 
+                { 
+                    return Before.After + Amount; 
+                }
+            } set { After = value; } }
+
+        public Plus(IAction before, decimal amount) : base(before, amount)
+        {
+            Name = "plus";
+            Amount = amount;
+            Ignore = false;
+            Before = before;
         }
+        public Plus(decimal amount) : base(amount)
+        {
+            Name = "plus";
+            Amount = amount;
+            Ignore = false;
+        }
+
     }
 }

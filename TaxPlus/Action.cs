@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace TaxPlus
 {
-    public class Action
+    public interface IAction
     {
-        public bool Ignore { get; set; }
-        public decimal Before { get; set; }
-        public decimal After { get; }
+        Model Input { get; set; }
+        string Name { get; set; }
+        bool Ignore { get; set; }
+        IAction Before { get; set; }
+        decimal After{ get; set; }
     }
 }

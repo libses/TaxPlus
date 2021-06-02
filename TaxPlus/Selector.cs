@@ -12,6 +12,7 @@ namespace TaxPlus
 {
     public partial class Selector : Form
     {
+        TextBox box;
         private ModelForm mainForm = null;
         public Selector(Form callingForm)
         {
@@ -21,12 +22,15 @@ namespace TaxPlus
             table.RowStyles.Clear();
             for (int i = 0; i < 4; i++)
                 table.RowStyles.Add(new RowStyle(SizeType.Percent, 25));
-            var plus = new Button() { Text = "+", Dock = DockStyle.Fill };
+            var plus = new Button() { Text = "+", Dock = DockStyle.Fill};
             plus.Click += button1_Click;
             var minus = new Button() { Text = "-", Dock = DockStyle.Fill };
+            minus.Click += button1_Click;
             var multiply = new Button() { Text = "*", Dock = DockStyle.Fill };
+            multiply.Click += button1_Click;
             var divide = new Button() { Text = "/", Dock = DockStyle.Fill };
-            var box = new TextBox();
+            divide.Click += button1_Click;
+            box = new TextBox() { Dock = DockStyle.Fill };
             table.Controls.Add(plus, 0, 0);
             table.Controls.Add(minus, 0, 1);
             table.Controls.Add(multiply, 0, 2);
@@ -43,19 +47,47 @@ namespace TaxPlus
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var AL = mainForm.model.ActionList;
+            var model = mainForm.model;
+            var button = (Button)sender;
+            var dec = decimal.Zero;
+            try
+            {
+                dec = decimal.Parse(box.Text);
+            }
+            catch { }
+            switch (button.Text) {
+                case "+":
+                    AddToMainForm(model, new Plus(dec));
+                    break;
+                case "-":
+                    AddToMainForm(model, new Minus(dec));
+                    break;
+                case "/":
+                    AddToMainForm(model, new Divide(dec));
+                    break;
+                case "*":
+                    AddToMainForm(model, new Multiply(dec));
+                    break;
+            }
+        }
+        public void AddToMainForm<T>(Model model, T value) where T : IAction
+        {
+            var AL = model.ActionList;
             if (AL.Count > 0)
             {
-                AL.Add(new Plus(AL.Last().After, 10));
+                value.Before = AL.Last();
+                AL.Add(value);
             }
             else
             {
-                AL.Add(new Plus(mainForm.model.Input, 10));
+                value.Before = null;
+                value.Input = model;
+                AL.Add(value);
             }
         }
         public Selector()
         {
-            
+
         }
     }
 }
