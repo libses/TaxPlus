@@ -24,6 +24,17 @@ namespace TaxPlus
         }
         public void Refresh(object sender, EventArgs e)
         {
+            for (int i = 0; i < listview.Items.Count; i++)
+            {
+                if (listview.Items[i].Checked)
+                {
+                    model.ActionList[i].Ignore = true;
+                } 
+                else
+                {
+                    model.ActionList[i].Ignore = false;
+                }
+            }
             try
             {
                 model.Input = decimal.Parse(input.Text);
@@ -41,6 +52,7 @@ namespace TaxPlus
                     sb = sb + " " + ((IBinaryOperation)item).Amount;
                 }
                 var ListItem = new ListViewItem(sb);
+                ListItem.Checked = item.Ignore;
                 listview.Items.Add(ListItem);
             }
             if (model.ActionList.Count > 0)
